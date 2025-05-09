@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义右键菜单</title>
+    <style>
+          #custom-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            list-style-type: none;
+            padding: 8px 0;
+            margin: 0;
+            animation: fadeIn 0.2s ease-in-out;
+            min-width: 160px;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #custom-menu li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        #custom-menu li:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.03);
+        }
+
+        #custom-menu li i {
+            margin-right: 12px;
+            font-size: 18px;
+            color: #777;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+
+    <ul id="custom-menu">
+        <li onclick="copyText()"><i class="fa-solid fa-copy"></i> 复制</li>
+        <li onclick="pasteText()"><i class="fa-solid fa-paste"></i> 粘贴</li>
+        <li onclick="refreshPage()"><i class="fa-solid fa-arrows-rotate"></i> 刷新</li>
+        <li onclick="goToMain()"><i class="fa-solid fa-house"></i> 返回主界面</li>
+    </ul>
+
+    <script>
+        const customMenu = document.getElementById('custom-menu');
+        let selectedText = '';
+
+         document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+
+            selectedText = window.getSelection().toString();
+
+            customMenu.style.display = 'block';
+            customMenu.style.left = e.pageX + 'px';
+            customMenu.style.top = e.pageY + 'px';
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!customMenu.contains(e.target)) {
+                customMenu.style.display = 'none';
+            }
+        });
+
+           function copyText() {
+            if (selectedText) {
+                navigator.clipboard.writeText(selectedText).then(() => {
+                }).catch((err) => {
+                    console.error('复制失败: ', err);
+                });
+            }
+            customMenu.style.display = 'none';
+        }
+
+        function pasteText() {
+            navigator.clipboard.readText().then((clipboardText) => {
+                const activeElement = document.activeElement;
+                if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+                    activeElement.value += clipboardText;
+                }
+            }).catch((err) => {
+                console.error('粘贴失败: ', err);
+            });
+            customMenu.style.display = 'none';
+        }
+
+        function refreshPage() {
+            location.reload();
+        }
+
+        function goToMain() {
+            window.location.href = 'http://8.138.108.157:233/';
+        }
+    </script>
+</body>
+
+</html>
